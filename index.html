@@ -60,7 +60,7 @@
         .orb-1 { width: 300px; height: 300px; background: #00bfff; top: -50px; left: -50px; }
         .orb-2 { width: 350px; height: 350px; background: #ff3366; bottom: -50px; right: -50px; }
 
-        /* --- PEEKING CREATURE --- */
+        /* --- PEEKING CREATURE (BLINKS & SMILES WHEN IN PROFIT) --- */
         .peeking-creature {
             position: fixed;
             bottom: 0;
@@ -71,18 +71,37 @@
             border-radius: 50% 50% 0 0;
             box-shadow: 0 0 20px rgba(255, 152, 0, 0.4);
             z-index: 10;
+            transition: transform 0.3s ease;
         }
-        .peeking-creature::before, .peeking-creature::after {
-            content: '';
+        
+        .peeking-creature.happy {
+            animation: happyBounce 0.6s infinite alternate ease-in-out;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.7);
+            background: radial-gradient(circle at 50% 35%, #00ffcc, #009975);
+        }
+
+        @keyframes happyBounce {
+            0% { transform: translateY(0px) scale(1); }
+            100% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        /* Eyes */
+        .creature-eye {
             position: absolute;
             background: #ffffff;
             border-radius: 50%;
             width: 30px;
             height: 35px;
             top: 20px;
+            transition: height 0.1s;
         }
-        .peeking-creature::before { left: 12px; }
-        .peeking-creature::after { right: 12px; }
+        .eye-l { left: 12px; }
+        .eye-r { right: 12px; }
+
+        .peeking-creature.blinking .creature-eye {
+            height: 4px; /* Blink effect */
+            top: 35px;
+        }
 
         .creature-pupil {
             position: absolute;
@@ -90,10 +109,27 @@
             border-radius: 50%;
             width: 12px;
             height: 15px;
-            top: 30px;
+            top: 8px;
+            left: 9px;
         }
-        .pupil-l { left: 21px; }
-        .pupil-r { right: 21px; }
+
+        /* Smile for happy state */
+        .creature-smile {
+            position: absolute;
+            width: 30px;
+            height: 15px;
+            border-bottom: 3px solid #000;
+            border-radius: 0 0 20px 20px;
+            bottom: 20px;
+            left: 30px;
+            display: none;
+        }
+        .peeking-creature.happy .creature-smile {
+            display: block;
+        }
+        .peeking-creature.happy .creature-pupil {
+            display: none; /* Turn pupils into happy curves or hide */
+        }
 
         /* --- TERMINAL CONTAINER --- */
         .terminal-container {
@@ -225,28 +261,30 @@
 
         .controls {
             display: flex;
-            gap: 10px;
         }
 
         button {
-            flex: 1;
-            padding: 12px;
+            width: 100%;
+            padding: 14px;
             border: none;
             border-radius: 6px;
             font-weight: 700;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        button:disabled {
+            background-color: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+            opacity: 0.6;
         }
 
         .btn-sim-signal {
             background: linear-gradient(135deg, #00bfff, #0066ff);
             color: white;
-        }
-
-        .btn-reset {
-            background-color: #1e293b;
-            color: #f0f3f6;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.4);
         }
 
         .footer-note {
@@ -265,10 +303,11 @@
     <div class="neon-orb orb-1"></div>
     <div class="neon-orb orb-2"></div>
 
-    <!-- Peeking Creature -->
-    <div class="peeking-creature">
-        <div class="creature-pupil pupil-l"></div>
-        <div class="creature-pupil pupil-r"></div>
+    <!-- Peeking Creature (Blinks & Smiles when in profit) -->
+    <div class="peeking-creature" id="creature">
+        <div class="creature-eye eye-l"><div class="creature-pupil"></div></div>
+        <div class="creature-eye eye-r"><div class="creature-pupil"></div></div>
+        <div class="creature-smile"></div>
     </div>
 
     <!-- Main Dashboard Terminal -->
@@ -315,22 +354,21 @@
                 <div class="signal-action neutral-color" id="signal-display">SCANNING FOR SETUP...</div>
             </div>
 
+            <!-- Single Scan Button (Disabled while holding position) -->
             <div class="controls">
-                <button class="btn-sim-signal" onclick="triggerSniperEntry()">Scan & Hold Position</button>
-                <button class="btn-reset" onclick="resetBotState()">Reset / Scan Mode</button>
+                <button class="btn-sim-signal" id="scan-btn" onclick="triggerSniperEntry()">Scan & Lock Sniper Entry</button>
             </div>
 
             <div class="footer-note">
-                Locks position upon scan. Holds until SL or TP is hit.
+                Locks trade until TP or SL hits. Next scan unlocks automatically upon completion.
             </div>
         </div>
     </div>
 
     <script>
-        // Generate Floating Emojis Safely
+        // Floating Emojis
         const emojiList = ['📈', '🎯', '🚀', '⭐', '💎', '🔥', '💰'];
         const emojiContainer = document.getElementById('floating-emojis-container');
-        
         for (let i = 0; i < 12; i++) {
             let el = document.createElement('div');
             el.className = 'floating-emoji';
@@ -340,6 +378,13 @@
             el.style.animationDelay = (Math.random() * 3) + 's';
             emojiContainer.appendChild(el);
         }
+
+        // Random Blinking Effect for Creature
+        const creature = document.getElementById('creature');
+        setInterval(() => {
+            creature.classList.add('blinking');
+            setTimeout(() => creature.classList.remove('blinking'), 180);
+        }, 3500);
 
         // Audio PIP Sound Effect
         function playPipSound(isSuccess) {
@@ -359,7 +404,7 @@
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.3);
             } catch (e) {
-                console.log("Audio context note: user interaction needed.");
+                console.log("Audio requires interaction");
             }
         }
 
@@ -390,7 +435,7 @@
         setInterval(updateCountdownTimer, 1000);
         updateCountdownTimer();
 
-        // Live Price & Position Monitor
+        // Live Price Ticker & Position Management
         setInterval(() => {
             let fluctuation = (Math.random() * 2 - 1).toFixed(2);
             livePrice = parseFloat((livePrice + parseFloat(fluctuation)).toFixed(2));
@@ -398,12 +443,23 @@
             if (priceEl) priceEl.innerText = livePrice.toLocaleString();
 
             if (inPosition) {
+                // Check if price is in profit (moving towards TP)
+                let distanceToTP = takeProfit - livePrice;
+                let totalDistance = takeProfit - lockedEntry;
+                
+                if (livePrice >= lockedEntry) {
+                    creature.classList.add('happy'); // Happy & smiling when in profit!
+                } else {
+                    creature.classList.remove('happy');
+                }
+
+                // Check TP / SL triggers
                 if (livePrice >= takeProfit) {
                     playPipSound(true);
-                    triggerClose("🎯 TAKE PROFIT HIT! Resuming scan...");
+                    triggerClose("🎯 TAKE PROFIT HIT! Scan unlocked for next setup.");
                 } else if (livePrice <= stopLoss) {
                     playPipSound(false);
-                    triggerClose("🛑 STOP LOSS HIT! Resuming scan...");
+                    triggerClose("🛑 STOP LOSS HIT! Scan unlocked for next setup.");
                 }
             }
         }, 2000);
@@ -415,6 +471,10 @@
             lockedEntry = livePrice;
             stopLoss = parseFloat((lockedEntry - 25.00).toFixed(2));
             takeProfit = parseFloat((lockedEntry + 75.00).toFixed(2));
+
+            // Lock button so client cannot rescan until trade completes
+            document.getElementById('scan-btn').disabled = true;
+            document.getElementById('scan-btn').innerText = "POSITION LOCKED (HOLDING)";
 
             let banner = document.getElementById('status-banner');
             banner.className = "status-banner status-holding";
@@ -432,14 +492,12 @@
 
         function triggerClose(message) {
             inPosition = false;
+            creature.classList.remove('happy');
+
             let signalBox = document.getElementById('signal-display');
             signalBox.className = "signal-action neutral-color";
             signalBox.innerText = message;
-            setTimeout(resetBotState, 4000);
-        }
 
-        function resetBotState() {
-            inPosition = false;
             let banner = document.getElementById('status-banner');
             banner.className = "status-banner status-scanning";
             banner.children[0].innerText = "Status: SCANNING MARKET ZONES";
@@ -449,9 +507,10 @@
             document.getElementById('sl-value').innerText = "--";
             document.getElementById('tp-value').innerText = "--";
 
-            let signalBox = document.getElementById('signal-display');
-            signalBox.className = "signal-action neutral-color";
-            signalBox.innerText = "SCANNING FOR SETUP...";
+            // Unlock button for the next scan!
+            let scanBtn = document.getElementById('scan-btn');
+            scanBtn.disabled = false;
+            scanBtn.innerText = "Scan & Lock Next Sniper Entry";
         }
     </script>
 </body>
