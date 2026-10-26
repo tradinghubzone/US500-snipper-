@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>US500 AI Sniper Bot (1H)</title>
+    <title>US500 AI 200-Pip Sniper Bot (1H)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -246,7 +246,7 @@
         }
 
         .signal-action {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 800;
         }
 
@@ -307,13 +307,13 @@
     <!-- Main Dashboard Terminal -->
     <div class="terminal-container">
         <div class="header">
-            <h1>US500 AI Sniper Bot (1H)</h1>
+            <h1>US500 200-Pip AI Sniper Bot (1H)</h1>
             <div class="mt5-timer-box" id="mt5-timer">00:57:02</div>
         </div>
 
         <div class="content">
             <div id="status-banner" class="status-banner status-scanning">
-                <span>Status: SCANNING MARKET ZONES</span>
+                <span>Status: SCANNING 200-PIP SETUP</span>
                 <span id="state-badge">SEARCHING</span>
             </div>
 
@@ -323,8 +323,8 @@
                     <div class="metric-value" id="current-price" style="color: #00ffcc;">7,679.24</div>
                 </div>
                 <div style="text-align: right;">
-                    <div class="metric-label">Market Bias</div>
-                    <div class="metric-value" id="market-bias" style="color: #33d6ff;">BULLISH 📈</div>
+                    <div class="metric-label">Sniper Target</div>
+                    <div class="metric-value" style="color: #33d6ff;">+200 Pips 🎯</div>
                 </div>
             </div>
 
@@ -344,16 +344,16 @@
             </div>
 
             <div class="signal-display-box">
-                <div class="signal-title">ACTIVE DISPLAY / SIGNAL</div>
-                <div class="signal-action neutral-color" id="signal-display">SCANNING FOR SETUP...</div>
+                <div class="signal-title">ACTIVE DISPLAY / TARGET</div>
+                <div class="signal-action neutral-color" id="signal-display">SCANNING FOR 200-PIP SNIPER ENTRY...</div>
             </div>
 
             <div class="controls">
-                <button class="btn-sim-signal" id="scan-btn" onclick="triggerSniperEntry()">Scan & Lock Sniper Entry</button>
+                <button class="btn-sim-signal" id="scan-btn" onclick="triggerSniperEntry()">Scan & Lock 200-Pip Sniper Entry</button>
             </div>
 
             <div class="footer-note">
-                Locks trade until TP or SL hits. Next scan unlocks automatically upon completion.
+                Locks trade targeting exact 200 pips. Next scan unlocks automatically upon TP/SL hit.
             </div>
         </div>
     </div>
@@ -407,15 +407,11 @@
         let stopLoss = 0.00;
         let takeProfit = 0.00;
 
-        // Perfectly synchronized MT5 1H Candle Countdown Matcher
+        // Synchronized MT5 1H Candle Countdown
         function updateMT5Countdown() {
             const now = new Date();
-            // Align precisely with standard top-of-the-hour 1H bar closes matching MT5 time
-            const currentMinute = now.getMinutes();
-            const currentSecond = now.getSeconds();
-            
-            let remainingMins = 59 - currentMinute;
-            let remainingSecs = 60 - currentSecond;
+            let remainingMins = 59 - now.getMinutes();
+            let remainingSecs = 60 - now.getSeconds();
             if (remainingSecs === 60) {
                 remainingSecs = 0;
                 remainingMins += 1;
@@ -429,7 +425,7 @@
         setInterval(updateMT5Countdown, 1000);
         updateMT5Countdown();
 
-        // Live Price Ticker & Position Management
+        // Live Price Ticker & Position Management (Targeting 200 Pips)
         setInterval(() => {
             let fluctuation = (Math.random() * 2 - 1).toFixed(2);
             livePrice = parseFloat((livePrice + parseFloat(fluctuation)).toFixed(2));
@@ -447,7 +443,7 @@
                 // Check TP / SL triggers
                 if (livePrice >= takeProfit) {
                     playPipSound(true);
-                    triggerClose("🎯 TAKE PROFIT HIT! Scan unlocked for next setup.");
+                    triggerClose("🎯 200-PIP TAKE PROFIT HIT! Scan unlocked for next setup.");
                 } else if (livePrice <= stopLoss) {
                     playPipSound(false);
                     triggerClose("🛑 STOP LOSS HIT! Scan unlocked for next setup.");
@@ -460,18 +456,18 @@
 
             inPosition = true;
             lockedEntry = livePrice;
-            stopLoss = parseFloat((lockedEntry - 25.00).toFixed(2));
-            takeProfit = parseFloat((lockedEntry + 75.00).toFixed(2));
+            stopLoss = parseFloat((lockedEntry - 40.00).toFixed(2));     // Tight sniper risk
+            takeProfit = parseFloat((lockedEntry + 200.00).toFixed(2));  // Exact 200 Pip Target!
 
             // Lock scan button until trade completes
             let scanBtn = document.getElementById('scan-btn');
             scanBtn.disabled = true;
-            scanBtn.innerText = "POSITION LOCKED (HOLDING)";
+            scanBtn.innerText = "200-PIP TARGET LOCKED (HOLDING)";
 
             let banner = document.getElementById('status-banner');
             banner.className = "status-banner status-holding";
-            banner.children[0].innerText = "Status: POSITION LOCKED (HOLDING)";
-            document.getElementById('state-badge').innerText = "ACTIVE HOLD";
+            banner.children[0].innerText = "Status: 200-PIP TARGET LOCKED";
+            document.getElementById('state-badge').innerText = "HOLDING 200 PIPS";
 
             document.getElementById('entry-value').innerText = lockedEntry.toLocaleString();
             document.getElementById('sl-value').innerText = stopLoss.toLocaleString();
@@ -479,7 +475,7 @@
 
             let signalBox = document.getElementById('signal-display');
             signalBox.className = "signal-action buy-color";
-            signalBox.innerText = "HOLD LONG (Monitoring TP/SL)";
+            signalBox.innerText = "HOLD LONG (Targeting +200 Pips)";
         }
 
         function triggerClose(message) {
@@ -492,7 +488,7 @@
 
             let banner = document.getElementById('status-banner');
             banner.className = "status-banner status-scanning";
-            banner.children[0].innerText = "Status: SCANNING MARKET ZONES";
+            banner.children[0].innerText = "Status: SCANNING 200-PIP SETUP";
             document.getElementById('state-badge').innerText = "SEARCHING";
 
             document.getElementById('entry-value').innerText = "--";
@@ -502,7 +498,7 @@
             // Unlock button for the next scan!
             let scanBtn = document.getElementById('scan-btn');
             scanBtn.disabled = false;
-            scanBtn.innerText = "Scan & Lock Next Sniper Entry";
+            scanBtn.innerText = "Scan & Lock Next 200-Pip Entry";
         }
     </script>
 </body>
