@@ -5,37 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>US500 AI Sniper Bot (1H)</title>
     <style>
-        :root {
-            --card-bg: rgba(12, 18, 32, 0.88);
-            --border-color: rgba(0, 191, 255, 0.4);
-            --text-main: #f0f3f6;
-            --text-dim: #9598a1;
-            --accent-green: #00ffcc;
-            --accent-red: #ff3366;
-            --accent-blue: #00bfff;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
             background-color: #020617;
-            color: var(--text-main);
+            color: #f0f3f6;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
         }
 
-        /* --- VIBRANT SKY-BLUE & TRADING ANIMATED BACKGROUND --- */
+        /* --- BACKGROUND ANIMATION --- */
         .animated-bg {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
@@ -44,10 +34,9 @@
             z-index: -3;
         }
 
-        /* Floating Animated Emojis & Market Symbols */
         .floating-emoji {
-            position: absolute;
-            font-size: 24px;
+            position: fixed;
+            font-size: 22px;
             pointer-events: none;
             animation: floatEmoji 7s infinite linear;
             z-index: -2;
@@ -61,147 +50,123 @@
             100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Glowing neon gradient orbs */
         .neon-orb {
-            position: absolute;
+            position: fixed;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
-            animation: orbFloat 10s infinite alternate ease-in-out;
+            filter: blur(60px);
+            opacity: 0.35;
             z-index: -2;
         }
-        .orb-1 { width: 400px; height: 400px; background: rgba(0, 191, 255, 0.35); top: -100px; left: -100px; }
-        .orb-2 { width: 450px; height: 450px; background: rgba(255, 51, 102, 0.2); bottom: -100px; right: -100px; animation-delay: -5s; }
+        .orb-1 { width: 300px; height: 300px; background: #00bfff; top: -50px; left: -50px; }
+        .orb-2 { width: 350px; height: 350px; background: #ff3366; bottom: -50px; right: -50px; }
 
-        @keyframes orbFloat {
-            0% { transform: translateY(0px) scale(1); }
-            100% { transform: translateY(30px) scale(1.1); }
-        }
-
-        /* --- CUTE FURRY CHARACTER PEEKING FROM CORNER --- */
+        /* --- PEEKING CREATURE --- */
         .peeking-creature {
-            position: absolute;
-            bottom: -10px;
-            right: 25px;
-            width: 110px;
-            height: 110px;
+            position: fixed;
+            bottom: 0;
+            right: 20px;
+            width: 90px;
+            height: 90px;
             background: radial-gradient(circle at 50% 35%, #ff9800, #d84315);
-            border-radius: 50% 50% 15% 15%;
-            box-shadow: 0 0 25px rgba(255, 152, 0, 0.5);
-            z-index: 2;
-            animation: peekAnim 4s ease-in-out infinite alternate;
+            border-radius: 50% 50% 0 0;
+            box-shadow: 0 0 20px rgba(255, 152, 0, 0.4);
+            z-index: 10;
         }
         .peeking-creature::before, .peeking-creature::after {
             content: '';
             position: absolute;
             background: #ffffff;
             border-radius: 50%;
-            width: 36px;
-            height: 42px;
-            top: 25px;
+            width: 30px;
+            height: 35px;
+            top: 20px;
         }
-        .peeking-creature::before { left: 14px; }
-        .peeking-creature::after { right: 14px; }
+        .peeking-creature::before { left: 12px; }
+        .peeking-creature::after { right: 12px; }
 
         .creature-pupil {
             position: absolute;
             background: #000;
             border-radius: 50%;
-            width: 14px;
-            height: 18px;
-            top: 36px;
-            animation: lookAround 5s infinite;
+            width: 12px;
+            height: 15px;
+            top: 30px;
         }
-        .pupil-l { left: 25px; }
-        .pupil-r { right: 25px; }
+        .pupil-l { left: 21px; }
+        .pupil-r { right: 21px; }
 
-        @keyframes peekAnim {
-            0% { transform: translateY(12px); }
-            100% { transform: translateY(-4px) rotate(1deg); }
-        }
-        @keyframes lookAround {
-            0%, 100% { transform: translate(0,0); }
-            40% { transform: translate(2px, -2px); }
-            80% { transform: translate(-2px, 2px); }
-        }
-
-        /* --- TERMINAL GLASS CONTAINER --- */
+        /* --- TERMINAL CONTAINER --- */
         .terminal-container {
-            width: 100%;
-            max-width: 660px;
-            background-color: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
+            width: 92%;
+            max-width: 620px;
+            background-color: rgba(12, 18, 32, 0.92);
+            border: 1px solid rgba(0, 191, 255, 0.4);
             border-radius: 16px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 191, 255, 0.25);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
             overflow: hidden;
-            z-index: 1;
+            z-index: 5;
+            margin: 20px 0;
         }
 
         .header {
             background: linear-gradient(90deg, #101c30, #172a48);
-            padding: 16px 20px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid rgba(0, 191, 255, 0.3);
         }
 
         .header h1 {
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: #fff;
-            text-shadow: 0 0 10px rgba(0, 191, 255, 0.6);
         }
 
         .mt5-timer-box {
             background: rgba(0, 191, 255, 0.15);
-            border: 1px solid var(--accent-blue);
-            padding: 6px 14px;
-            border-radius: 8px;
+            border: 1px solid #00bfff;
+            padding: 5px 12px;
+            border-radius: 6px;
             font-family: monospace;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #33d6ff;
             font-weight: bold;
-            box-shadow: 0 0 12px rgba(0, 191, 255, 0.4);
         }
 
         .content {
-            padding: 22px;
+            padding: 20px;
         }
 
         .status-banner {
-            padding: 14px 18px;
-            border-radius: 10px;
-            font-size: 0.9rem;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 0.85rem;
             font-weight: 700;
-            margin-bottom: 18px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s ease;
         }
 
         .status-scanning {
             background: rgba(255, 170, 0, 0.15);
             border: 1px solid #ffaa00;
             color: #ffcc00;
-            box-shadow: 0 0 15px rgba(255, 170, 0, 0.2);
         }
 
         .status-holding {
             background: rgba(0, 255, 204, 0.15);
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
         }
 
         .main-price-card {
-            background: linear-gradient(135deg, rgba(0, 191, 255, 0.1), rgba(15, 23, 42, 0.9));
-            border: 1px solid var(--accent-blue);
-            padding: 14px 18px;
-            border-radius: 10px;
-            margin-bottom: 18px;
+            background: rgba(0, 191, 255, 0.08);
+            border: 1px solid #00bfff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -209,10 +174,9 @@
 
         .metric-label {
             font-size: 0.7rem;
-            color: var(--text-dim);
+            color: #9598a1;
             text-transform: uppercase;
-            margin-bottom: 4px;
-            letter-spacing: 0.5px;
+            margin-bottom: 3px;
         }
 
         .metric-value {
@@ -225,86 +189,270 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-bottom: 18px;
+            margin-bottom: 15px;
         }
 
         .metric-card {
-            background: rgba(18, 26, 43, 0.85);
+            background: rgba(18, 26, 43, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 12px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             text-align: center;
         }
 
         .signal-display-box {
             background: rgba(8, 12, 22, 0.95);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 18px;
-            margin-bottom: 18px;
+            border: 1px solid rgba(0, 191, 255, 0.4);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
             text-align: center;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
         }
 
         .signal-title {
             font-size: 0.75rem;
-            color: var(--text-dim);
-            margin-bottom: 6px;
-            letter-spacing: 1px;
+            color: #9598a1;
+            margin-bottom: 5px;
         }
 
         .signal-action {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 800;
-            letter-spacing: 1px;
         }
 
-        .buy-color { color: var(--accent-green); text-shadow: 0 0 15px rgba(0, 255, 204, 0.6); }
-        .neutral-color { color: var(--text-main); }
+        .buy-color { color: #00ffcc; }
+        .neutral-color { color: #f0f3f6; }
 
         .controls {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         button {
             flex: 1;
-            padding: 14px;
+            padding: 12px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.95rem;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.2);
+            font-size: 0.9rem;
         }
 
         .btn-sim-signal {
             background: linear-gradient(135deg, #00bfff, #0066ff);
             color: white;
-            box-shadow: 0 5px 20px rgba(0, 191, 255, 0.4);
         }
 
         .btn-reset {
             background-color: #1e293b;
-            color: var(--text-main);
+            color: #f0f3f6;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .footer-note {
-            margin-top: 15px;
+            margin-top: 12px;
             text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-dim);
+            font-size: 0.7rem;
+            color: #9598a1;
         }
     </style>
 </head>
 <body>
 
-    <!-- Animated Background Environment -->
+    <!-- Background Environment -->
     <div class="animated-bg"></div>
-    <div id="
+    <div id="floating-emojis-container"></div>
+    <div class="neon-orb orb-1"></div>
+    <div class="neon-orb orb-2"></div>
+
+    <!-- Peeking Creature -->
+    <div class="peeking-creature">
+        <div class="creature-pupil pupil-l"></div>
+        <div class="creature-pupil pupil-r"></div>
+    </div>
+
+    <!-- Main Dashboard Terminal -->
+    <div class="terminal-container">
+        <div class="header">
+            <h1>US500 AI Sniper Bot (1H)</h1>
+            <div class="mt5-timer-box" id="mt5-timer">00:00:00</div>
+        </div>
+
+        <div class="content">
+            <div id="status-banner" class="status-banner status-scanning">
+                <span>Status: SCANNING MARKET ZONES</span>
+                <span id="state-badge">SEARCHING</span>
+            </div>
+
+            <div class="main-price-card">
+                <div>
+                    <div class="metric-label">US500 Index Price</div>
+                    <div class="metric-value" id="current-price" style="color: #00ffcc;">7,689.24</div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="metric-label">Market Bias</div>
+                    <div class="metric-value" id="market-bias" style="color: #33d6ff;">BULLISH 📈</div>
+                </div>
+            </div>
+
+            <div class="grid-metrics">
+                <div class="metric-card">
+                    <div class="metric-label">Entry Price</div>
+                    <div class="metric-value" id="entry-value" style="color: #00bfff;">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Stop Loss (SL)</div>
+                    <div class="metric-value" id="sl-value" style="color: #ff3366;">--</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Take Profit (TP)</div>
+                    <div class="metric-value" id="tp-value" style="color: #00ffcc;">--</div>
+                </div>
+            </div>
+
+            <div class="signal-display-box">
+                <div class="signal-title">ACTIVE DISPLAY / SIGNAL</div>
+                <div class="signal-action neutral-color" id="signal-display">SCANNING FOR SETUP...</div>
+            </div>
+
+            <div class="controls">
+                <button class="btn-sim-signal" onclick="triggerSniperEntry()">Scan & Hold Position</button>
+                <button class="btn-reset" onclick="resetBotState()">Reset / Scan Mode</button>
+            </div>
+
+            <div class="footer-note">
+                Locks position upon scan. Holds until SL or TP is hit.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate Floating Emojis Safely
+        const emojiList = ['📈', '🎯', '🚀', '⭐', '💎', '🔥', '💰'];
+        const emojiContainer = document.getElementById('floating-emojis-container');
+        
+        for (let i = 0; i < 12; i++) {
+            let el = document.createElement('div');
+            el.className = 'floating-emoji';
+            el.innerText = emojiList[Math.floor(Math.random() * emojiList.length)];
+            el.style.left = Math.random() * 95 + 'vw';
+            el.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            el.style.animationDelay = (Math.random() * 3) + 's';
+            emojiContainer.appendChild(el);
+        }
+
+        // Audio PIP Sound Effect
+        function playPipSound(isSuccess) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = isSuccess ? 'triangle' : 'sawtooth';
+                osc.frequency.setValueAtTime(isSuccess ? 900 : 250, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch (e) {
+                console.log("Audio context note: user interaction needed.");
+            }
+        }
+
+        let inPosition = false;
+        let livePrice = 7689.24;
+        let lockedEntry = 0.00;
+        let stopLoss = 0.00;
+        let takeProfit = 0.00;
+
+        // MT5 Style Countdown
+        function getSecondsToNextHour() {
+            const now = new Date();
+            return ((59 - now.getMinutes()) * 60) + (60 - now.getSeconds());
+        }
+        let countdownSeconds = getSecondsToNextHour();
+
+        function updateCountdownTimer() {
+            let h = Math.floor(countdownSeconds / 3600);
+            let m = Math.floor((countdownSeconds % 3600) / 60);
+            let s = countdownSeconds % 60;
+            const timerEl = document.getElementById('mt5-timer');
+            if (timerEl) {
+                timerEl.innerText = String(h).padStart(2,'0') + ":" + String(m).padStart(2,'0') + ":" + String(s).padStart(2,'0');
+            }
+            if (countdownSeconds > 0) countdownSeconds--;
+            else countdownSeconds = 3600;
+        }
+        setInterval(updateCountdownTimer, 1000);
+        updateCountdownTimer();
+
+        // Live Price & Position Monitor
+        setInterval(() => {
+            let fluctuation = (Math.random() * 2 - 1).toFixed(2);
+            livePrice = parseFloat((livePrice + parseFloat(fluctuation)).toFixed(2));
+            const priceEl = document.getElementById('current-price');
+            if (priceEl) priceEl.innerText = livePrice.toLocaleString();
+
+            if (inPosition) {
+                if (livePrice >= takeProfit) {
+                    playPipSound(true);
+                    triggerClose("🎯 TAKE PROFIT HIT! Resuming scan...");
+                } else if (livePrice <= stopLoss) {
+                    playPipSound(false);
+                    triggerClose("🛑 STOP LOSS HIT! Resuming scan...");
+                }
+            }
+        }, 2000);
+
+        function triggerSniperEntry() {
+            if (inPosition) return;
+
+            inPosition = true;
+            lockedEntry = livePrice;
+            stopLoss = parseFloat((lockedEntry - 25.00).toFixed(2));
+            takeProfit = parseFloat((lockedEntry + 75.00).toFixed(2));
+
+            let banner = document.getElementById('status-banner');
+            banner.className = "status-banner status-holding";
+            banner.children[0].innerText = "Status: POSITION LOCKED (HOLDING)";
+            document.getElementById('state-badge').innerText = "ACTIVE HOLD";
+
+            document.getElementById('entry-value').innerText = lockedEntry.toLocaleString();
+            document.getElementById('sl-value').innerText = stopLoss.toLocaleString();
+            document.getElementById('tp-value').innerText = takeProfit.toLocaleString();
+
+            let signalBox = document.getElementById('signal-display');
+            signalBox.className = "signal-action buy-color";
+            signalBox.innerText = "HOLD LONG (Monitoring TP/SL)";
+        }
+
+        function triggerClose(message) {
+            inPosition = false;
+            let signalBox = document.getElementById('signal-display');
+            signalBox.className = "signal-action neutral-color";
+            signalBox.innerText = message;
+            setTimeout(resetBotState, 4000);
+        }
+
+        function resetBotState() {
+            inPosition = false;
+            let banner = document.getElementById('status-banner');
+            banner.className = "status-banner status-scanning";
+            banner.children[0].innerText = "Status: SCANNING MARKET ZONES";
+            document.getElementById('state-badge').innerText = "SEARCHING";
+
+            document.getElementById('entry-value').innerText = "--";
+            document.getElementById('sl-value').innerText = "--";
+            document.getElementById('tp-value').innerText = "--";
+
+            let signalBox = document.getElementById('signal-display');
+            signalBox.className = "signal-action neutral-color";
+            signalBox.innerText = "SCANNING FOR SETUP...";
+        }
+    </script>
+</body>
+</html>
