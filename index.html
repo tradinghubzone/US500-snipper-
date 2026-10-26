@@ -6,8 +6,8 @@
     <title>US500 AI Sniper Bot (1H)</title>
     <style>
         :root {
-            --card-bg: rgba(15, 20, 32, 0.88);
-            --border-color: rgba(64, 128, 255, 0.3);
+            --card-bg: rgba(12, 18, 32, 0.88);
+            --border-color: rgba(0, 191, 255, 0.4);
             --text-main: #f0f3f6;
             --text-dim: #9598a1;
             --accent-green: #00ffcc;
@@ -23,7 +23,7 @@
         }
 
         body {
-            background-color: #02040a;
+            background-color: #020617;
             color: var(--text-main);
             display: flex;
             justify-content: center;
@@ -33,76 +33,113 @@
             position: relative;
         }
 
-        /* --- BRIGHT & STUNNING VIBRANT ANIMATED BACKGROUND --- */
+        /* --- VIBRANT SKY-BLUE & TRADING ANIMATED BACKGROUND --- */
         .animated-bg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, #050b18 0%, #0c1b33 50%, #1a0b2e 100%);
+            background: linear-gradient(135deg, #02203c 0%, #081226 50%, #030712 100%);
             z-index: -3;
         }
 
-        /* Glowing trading grid lines */
-        .grid-overlay {
+        /* Floating Animated Emojis & Market Symbols */
+        .floating-emoji {
             position: absolute;
-            width: 100vw;
-            height: 100vh;
-            background-image: 
-                linear-gradient(rgba(0, 191, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 191, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
+            font-size: 24px;
+            pointer-events: none;
+            animation: floatEmoji 7s infinite linear;
             z-index: -2;
+            opacity: 0.7;
         }
 
-        /* Floating vibrant neon orbs */
+        @keyframes floatEmoji {
+            0% { transform: translateY(105vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Glowing neon gradient orbs */
         .neon-orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.5;
+            filter: blur(80px);
+            opacity: 0.4;
             animation: orbFloat 10s infinite alternate ease-in-out;
             z-index: -2;
         }
-
-        .orb-1 {
-            width: 350px;
-            height: 350px;
-            background: rgba(0, 191, 255, 0.4);
-            top: -50px;
-            left: -50px;
-        }
-
-        .orb-2 {
-            width: 400px;
-            height: 400px;
-            background: rgba(255, 51, 102, 0.25);
-            bottom: -80px;
-            right: -80px;
-            animation-delay: -5s;
-        }
+        .orb-1 { width: 400px; height: 400px; background: rgba(0, 191, 255, 0.35); top: -100px; left: -100px; }
+        .orb-2 { width: 450px; height: 450px; background: rgba(255, 51, 102, 0.2); bottom: -100px; right: -100px; animation-delay: -5s; }
 
         @keyframes orbFloat {
             0% { transform: translateY(0px) scale(1); }
-            100% { transform: translateY(40px) scale(1.15); }
+            100% { transform: translateY(30px) scale(1.1); }
+        }
+
+        /* --- CUTE FURRY CHARACTER PEEKING FROM CORNER --- */
+        .peeking-creature {
+            position: absolute;
+            bottom: -10px;
+            right: 25px;
+            width: 110px;
+            height: 110px;
+            background: radial-gradient(circle at 50% 35%, #ff9800, #d84315);
+            border-radius: 50% 50% 15% 15%;
+            box-shadow: 0 0 25px rgba(255, 152, 0, 0.5);
+            z-index: 2;
+            animation: peekAnim 4s ease-in-out infinite alternate;
+        }
+        .peeking-creature::before, .peeking-creature::after {
+            content: '';
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            width: 36px;
+            height: 42px;
+            top: 25px;
+        }
+        .peeking-creature::before { left: 14px; }
+        .peeking-creature::after { right: 14px; }
+
+        .creature-pupil {
+            position: absolute;
+            background: #000;
+            border-radius: 50%;
+            width: 14px;
+            height: 18px;
+            top: 36px;
+            animation: lookAround 5s infinite;
+        }
+        .pupil-l { left: 25px; }
+        .pupil-r { right: 25px; }
+
+        @keyframes peekAnim {
+            0% { transform: translateY(12px); }
+            100% { transform: translateY(-4px) rotate(1deg); }
+        }
+        @keyframes lookAround {
+            0%, 100% { transform: translate(0,0); }
+            40% { transform: translate(2px, -2px); }
+            80% { transform: translate(-2px, 2px); }
         }
 
         /* --- TERMINAL GLASS CONTAINER --- */
         .terminal-container {
             width: 100%;
-            max-width: 680px;
+            max-width: 660px;
             background-color: var(--card-bg);
             backdrop-filter: blur(16px);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 191, 255, 0.2);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 191, 255, 0.25);
             overflow: hidden;
             z-index: 1;
         }
 
         .header {
-            background: linear-gradient(90deg, #121c2e, #1a2942);
+            background: linear-gradient(90deg, #101c30, #172a48);
             padding: 16px 20px;
             display: flex;
             justify-content: space-between;
@@ -114,8 +151,7 @@
             font-size: 1.15rem;
             font-weight: 700;
             color: #fff;
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.6);
         }
 
         .mt5-timer-box {
@@ -139,7 +175,7 @@
             border-radius: 10px;
             font-size: 0.9rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -160,55 +196,54 @@
             box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
         }
 
-        /* 3-Column Metrics Grid for Entry, SL, TP clarity */
-        .grid-metrics {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .metric-card {
-            background: rgba(20, 28, 45, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 12px;
+        .main-price-card {
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.1), rgba(15, 23, 42, 0.9));
+            border: 1px solid var(--accent-blue);
+            padding: 14px 18px;
             border-radius: 10px;
-            text-align: center;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .metric-label {
             font-size: 0.7rem;
             color: var(--text-dim);
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             letter-spacing: 0.5px;
         }
 
         .metric-value {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #fff;
         }
 
-        .main-price-card {
-            background: linear-gradient(135deg, rgba(0, 191, 255, 0.1), rgba(20, 28, 45, 0.9));
-            border: 1px solid var(--accent-blue);
-            padding: 15px;
+        .grid-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .metric-card {
+            background: rgba(18, 26, 43, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px;
             border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
         }
 
         .signal-display-box {
-            background: rgba(10, 14, 24, 0.9);
+            background: rgba(8, 12, 22, 0.95);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 18px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             text-align: center;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6);
         }
 
         .signal-title {
@@ -219,7 +254,7 @@
         }
 
         .signal-action {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             letter-spacing: 1px;
         }
@@ -255,13 +290,13 @@
         }
 
         .btn-reset {
-            background-color: #212c42;
+            background-color: #1e293b;
             color: var(--text-main);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .footer-note {
-            margin-top: 18px;
+            margin-top: 15px;
             text-align: center;
             font-size: 0.75rem;
             color: var(--text-dim);
@@ -270,199 +305,6 @@
 </head>
 <body>
 
-    <!-- Vibrant Animated Background Environment -->
+    <!-- Animated Background Environment -->
     <div class="animated-bg"></div>
-    <div class="grid-overlay"></div>
-    <div class="neon-orb orb-1"></div>
-    <div class="neon-orb orb-2"></div>
-
-    <!-- Main Terminal Dashboard -->
-    <div class="terminal-container">
-        <!-- Header with MT5 Countdown -->
-        <div class="header">
-            <h1>US500 AI Sniper Bot (1H)</h1>
-            <div class="mt5-timer-box" id="mt5-timer">00:00:00</div>
-        </div>
-
-        <div class="content">
-            <!-- Bot Status Banner -->
-            <div id="status-banner" class="status-banner status-scanning">
-                <span>Status: SCANNING MARKET SNIPER ZONES</span>
-                <span id="state-badge">SEARCHING</span>
-            </div>
-
-            <!-- Main Index Price Banner -->
-            <div class="main-price-card">
-                <div>
-                    <div class="metric-label">US500 Index Live Price</div>
-                    <div class="metric-value" id="current-price" style="font-size: 1.5rem; color: #00ffcc;">7,689.24</div>
-                </div>
-                <div style="text-align: right;">
-                    <div class="metric-label">Market Bias</div>
-                    <div class="metric-value" id="market-bias" style="color: #33d6ff;">BULLISH 📈</div>
-                </div>
-            </div>
-
-            <!-- Clear Entry, SL, TP Metrics Grid -->
-            <div class="grid-metrics">
-                <div class="metric-card">
-                    <div class="metric-label">Entry Price</div>
-                    <div class="metric-value" id="entry-value" style="color: #00bfff;">--</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Stop Loss (SL)</div>
-                    <div class="metric-value" id="sl-value" style="color: #ff3366;">--</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Take Profit (TP)</div>
-                    <div class="metric-value" id="tp-value" style="color: #00ffcc;">--</div>
-                </div>
-            </div>
-
-            <!-- Core Display Box -->
-            <div class="signal-display-box">
-                <div class="signal-title">ACTIVE DISPLAY / SIGNAL</div>
-                <div class="signal-action neutral-color" id="signal-display">SCANNING FOR SETUP...</div>
-            </div>
-
-            <!-- Interactive Buttons -->
-            <div class="controls">
-                <button class="btn-sim-signal" onclick="triggerSniperEntry()">Simulate Sniper Entry</button>
-                <button class="btn-reset" onclick="resetBotState()">Reset / Scan Mode</button>
-            </div>
-
-            <div class="footer-note">
-                Strict 1H timeframe logic. Audio PIP active on TP/SL trigger.
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Web Audio API Sound Generator for PIP Effect
-        function playPipSound(isSuccess) {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                
-                osc.type = isSuccess ? 'triangle' : 'sawtooth';
-                osc.frequency.setValueAtTime(isSuccess ? 880 : 300, audioCtx.currentTime); // High pitch for TP, low for SL
-                
-                gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-                
-                osc.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.4);
-            } catch (e) {
-                console.log("Audio context blocked until user interaction.");
-            }
-        }
-
-        // Bot State Variables
-        let inPosition = false;
-        let livePrice = 7689.24;
-        let lockedEntry = 0.00;
-        let stopLoss = 0.00;
-        let takeProfit = 0.00;
-
-        // MT5 Style 1-Hour Candle Countdown Simulation
-        function getSecondsToNextHour() {
-            const now = new Date();
-            const minutes = now.getMinutes();
-            const seconds = now.getSeconds();
-            return ((59 - minutes) * 60) + (60 - seconds);
-        }
-
-        let countdownSeconds = getSecondsToNextHour();
-
-        function updateCountdownTimer() {
-            let hours = Math.floor(countdownSeconds / 3600);
-            let minutes = Math.floor((countdownSeconds % 3600) / 60);
-            let seconds = countdownSeconds % 60;
-
-            let formatted = 
-                String(hours).padStart(2, '0') + ":" +
-                String(minutes).padStart(2, '0') + ":" +
-                String(seconds).padStart(2, '0');
-
-            document.getElementById('mt5-timer').innerText = formatted;
-
-            if (countdownSeconds > 0) {
-                countdownSeconds--;
-            } else {
-                countdownSeconds = 3600;
-            }
-        }
-
-        setInterval(updateCountdownTimer, 1000);
-        updateCountdownTimer();
-
-        // Live Price Ticker Simulation matching MT5 levels (~7689)
-        setInterval(() => {
-            let fluctuation = (Math.random() * 2 - 1).toFixed(2);
-            livePrice = parseFloat((livePrice + parseFloat(fluctuation)).toFixed(2));
-            
-            document.getElementById('current-price').innerText = livePrice.toLocaleString();
-
-            if (inPosition) {
-                if (livePrice >= takeProfit) {
-                    playPipSound(true); // Success PIP sound
-                    triggerClose("🎯 TAKE PROFIT HIT! Bot resetting...");
-                } else if (livePrice <= stopLoss) {
-                    playPipSound(false); // Warning PIP sound
-                    triggerClose("🛑 STOP LOSS HIT! Bot resetting...");
-                }
-            }
-        }, 2000);
-
-        function triggerSniperEntry() {
-            inPosition = true;
-            lockedEntry = livePrice;
-            
-            stopLoss = parseFloat((lockedEntry - 25.00).toFixed(2));     // 25 points Risk
-            takeProfit = parseFloat((lockedEntry + 75.00).toFixed(2));   // 75 points Reward (1:3)
-
-            let banner = document.getElementById('status-banner');
-            banner.className = "status-banner status-holding";
-            banner.querySelector("span").innerText = "Status: POSITION LOCKED ACTIVE (HOLDING)";
-            document.getElementById('state-badge').innerText = "ACTIVE TRADE";
-
-            document.getElementById('entry-value').innerText = lockedEntry.toLocaleString();
-            document.getElementById('sl-value').innerText = stopLoss.toLocaleString();
-            document.getElementById('tp-value').innerText = takeProfit.toLocaleString();
-
-            let signalBox = document.getElementById('signal-display');
-            signalBox.className = "signal-action buy-color";
-            signalBox.innerText = "HOLD LONG (Monitoring TP/SL)";
-        }
-
-        function triggerClose(message) {
-            inPosition = false;
-            let signalBox = document.getElementById('signal-display');
-            signalBox.className = "signal-action neutral-color";
-            signalBox.innerText = message;
-
-            setTimeout(resetBotState, 4000);
-        }
-
-        function resetBotState() {
-            inPosition = false;
-            let banner = document.getElementById('status-banner');
-            banner.className = "status-banner status-scanning";
-            banner.querySelector("span").innerText = "Status: SCANNING MARKET SNIPER ZONES";
-            document.getElementById('state-badge').innerText = "SEARCHING";
-
-            document.getElementById('entry-value').innerText = "--";
-            document.getElementById('sl-value').innerText = "--";
-            document.getElementById('tp-value').innerText = "--";
-
-            let signalBox = document.getElementById('signal-display');
-            signalBox.className = "signal-action neutral-color";
-            signalBox.innerText = "SCANNING FOR SETUP...";
-        }
-    </script>
-</body>
-</html>
+    <div id="
