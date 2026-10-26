@@ -85,7 +85,6 @@
             100% { transform: translateY(-10px) scale(1.05); }
         }
 
-        /* Eyes */
         .creature-eye {
             position: absolute;
             background: #ffffff;
@@ -99,7 +98,7 @@
         .eye-r { right: 12px; }
 
         .peeking-creature.blinking .creature-eye {
-            height: 4px; /* Blink effect */
+            height: 4px;
             top: 35px;
         }
 
@@ -113,7 +112,6 @@
             left: 9px;
         }
 
-        /* Smile for happy state */
         .creature-smile {
             position: absolute;
             width: 30px;
@@ -124,12 +122,8 @@
             left: 30px;
             display: none;
         }
-        .peeking-creature.happy .creature-smile {
-            display: block;
-        }
-        .peeking-creature.happy .creature-pupil {
-            display: none; /* Turn pupils into happy curves or hide */
-        }
+        .peeking-creature.happy .creature-smile { display: block; }
+        .peeking-creature.happy .creature-pupil { display: none; }
 
         /* --- TERMINAL CONTAINER --- */
         .terminal-container {
@@ -303,7 +297,7 @@
     <div class="neon-orb orb-1"></div>
     <div class="neon-orb orb-2"></div>
 
-    <!-- Peeking Creature (Blinks & Smiles when in profit) -->
+    <!-- Peeking Creature -->
     <div class="peeking-creature" id="creature">
         <div class="creature-eye eye-l"><div class="creature-pupil"></div></div>
         <div class="creature-eye eye-r"><div class="creature-pupil"></div></div>
@@ -314,7 +308,7 @@
     <div class="terminal-container">
         <div class="header">
             <h1>US500 AI Sniper Bot (1H)</h1>
-            <div class="mt5-timer-box" id="mt5-timer">00:00:00</div>
+            <div class="mt5-timer-box" id="mt5-timer">00:57:02</div>
         </div>
 
         <div class="content">
@@ -326,7 +320,7 @@
             <div class="main-price-card">
                 <div>
                     <div class="metric-label">US500 Index Price</div>
-                    <div class="metric-value" id="current-price" style="color: #00ffcc;">7,689.24</div>
+                    <div class="metric-value" id="current-price" style="color: #00ffcc;">7,679.24</div>
                 </div>
                 <div style="text-align: right;">
                     <div class="metric-label">Market Bias</div>
@@ -354,7 +348,6 @@
                 <div class="signal-action neutral-color" id="signal-display">SCANNING FOR SETUP...</div>
             </div>
 
-            <!-- Single Scan Button (Disabled while holding position) -->
             <div class="controls">
                 <button class="btn-sim-signal" id="scan-btn" onclick="triggerSniperEntry()">Scan & Lock Sniper Entry</button>
             </div>
@@ -379,14 +372,14 @@
             emojiContainer.appendChild(el);
         }
 
-        // Random Blinking Effect for Creature
+        // Blinking Creature Effect
         const creature = document.getElementById('creature');
         setInterval(() => {
             creature.classList.add('blinking');
             setTimeout(() => creature.classList.remove('blinking'), 180);
         }, 3500);
 
-        // Audio PIP Sound Effect
+        // Audio PIP Sound Effect for TP/SL hits
         function playPipSound(isSuccess) {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -404,36 +397,37 @@
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.3);
             } catch (e) {
-                console.log("Audio requires interaction");
+                console.log("Audio requires user interaction");
             }
         }
 
         let inPosition = false;
-        let livePrice = 7689.24;
+        let livePrice = 7679.24;
         let lockedEntry = 0.00;
         let stopLoss = 0.00;
         let takeProfit = 0.00;
 
-        // MT5 Style Countdown
-        function getSecondsToNextHour() {
+        // Perfectly synchronized MT5 1H Candle Countdown Matcher
+        function updateMT5Countdown() {
             const now = new Date();
-            return ((59 - now.getMinutes()) * 60) + (60 - now.getSeconds());
-        }
-        let countdownSeconds = getSecondsToNextHour();
+            // Align precisely with standard top-of-the-hour 1H bar closes matching MT5 time
+            const currentMinute = now.getMinutes();
+            const currentSecond = now.getSeconds();
+            
+            let remainingMins = 59 - currentMinute;
+            let remainingSecs = 60 - currentSecond;
+            if (remainingSecs === 60) {
+                remainingSecs = 0;
+                remainingMins += 1;
+            }
 
-        function updateCountdownTimer() {
-            let h = Math.floor(countdownSeconds / 3600);
-            let m = Math.floor((countdownSeconds % 3600) / 60);
-            let s = countdownSeconds % 60;
             const timerEl = document.getElementById('mt5-timer');
             if (timerEl) {
-                timerEl.innerText = String(h).padStart(2,'0') + ":" + String(m).padStart(2,'0') + ":" + String(s).padStart(2,'0');
+                timerEl.innerText = "00:" + String(remainingMins).padStart(2,'0') + ":" + String(remainingSecs).padStart(2,'0');
             }
-            if (countdownSeconds > 0) countdownSeconds--;
-            else countdownSeconds = 3600;
         }
-        setInterval(updateCountdownTimer, 1000);
-        updateCountdownTimer();
+        setInterval(updateMT5Countdown, 1000);
+        updateMT5Countdown();
 
         // Live Price Ticker & Position Management
         setInterval(() => {
@@ -443,12 +437,9 @@
             if (priceEl) priceEl.innerText = livePrice.toLocaleString();
 
             if (inPosition) {
-                // Check if price is in profit (moving towards TP)
-                let distanceToTP = takeProfit - livePrice;
-                let totalDistance = takeProfit - lockedEntry;
-                
+                // Happy blinking creature state when in profit
                 if (livePrice >= lockedEntry) {
-                    creature.classList.add('happy'); // Happy & smiling when in profit!
+                    creature.classList.add('happy'); 
                 } else {
                     creature.classList.remove('happy');
                 }
@@ -472,9 +463,10 @@
             stopLoss = parseFloat((lockedEntry - 25.00).toFixed(2));
             takeProfit = parseFloat((lockedEntry + 75.00).toFixed(2));
 
-            // Lock button so client cannot rescan until trade completes
-            document.getElementById('scan-btn').disabled = true;
-            document.getElementById('scan-btn').innerText = "POSITION LOCKED (HOLDING)";
+            // Lock scan button until trade completes
+            let scanBtn = document.getElementById('scan-btn');
+            scanBtn.disabled = true;
+            scanBtn.innerText = "POSITION LOCKED (HOLDING)";
 
             let banner = document.getElementById('status-banner');
             banner.className = "status-banner status-holding";
