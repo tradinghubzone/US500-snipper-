@@ -1,15 +1,1 @@
-{
-  "name": "US500 Sniper Bot",
-  "short_name": "US500 Bot",
-  "start_url": "index.html",
-  "display": "standalone",
-  "background_color": "#020617",
-  "theme_color": "#00bfff",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
-  ]
-}
+
